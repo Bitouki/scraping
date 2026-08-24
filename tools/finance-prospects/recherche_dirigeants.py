@@ -22,6 +22,7 @@ import argparse
 import csv
 import sys
 import time
+import unicodedata
 from typing import Any
 
 import httpx
@@ -41,18 +42,25 @@ NAF_CODES: dict[str, list[str]] = {
     ],
 }
 
-DECISION_ROLES = {
-    "president", "president directeur general", "directeur general",
-    "directrice generale", "gerant", "gerante", "co-gerant", "co-gerante",
-    "directeur general delegue", "directrice generale deleguee",
-    "membre du directoire", "president du directoire",
-}
+DECISION_KEYWORDS = (
+    "president", "directeur general", "directrice generale",
+    "gerant", "gerante", "membre du directoire",
+)
+NON_DECISION_MARKERS = ("commissaire",)
 
 
 def _norm(s: str | None) -> str:
     if not s:
         return ""
-    return s.strip().lower()
+    decomposed = unicodedata.normalize("NFKD", s.strip().lower())
+    return "".join(c for c in decomposed if not unicodedata.combining(c))
+
+
+def is_decision_role(qualite: str | None) -> bool:
+    q = _norm(qualite)
+    if any(marker in q for marker in NON_DECISION_MARKERS):
+        return False
+    return any(keyword in q for keyword in DECISION_KEYWORDS)
 
 
 def fetch_companies(naf_codes: list[str], limit: int, departement: str | None) -> list[dict[str, Any]]:
@@ -95,7 +103,7 @@ def extract_dirigeants(companies: list[dict[str, Any]], only_decision_roles: boo
 
         for dirigeant in company.get("dirigeants") or []:
             qualite = dirigeant.get("qualite", "")
-            if only_decision_roles and _norm(qualite) not in DECISION_ROLES:
+            if only_decision_roles and not is_decision_role(qualite):
                 continue
             rows.append({
                 "prenom": dirigeant.get("prenoms", dirigeant.get("prenom", "")),
