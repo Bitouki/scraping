@@ -34,7 +34,9 @@ Complete Model Context Protocol integration documentation:
 
 ### SOP Documentation (`sop/`)
 
-*Future: Standard operating procedures (e.g., adding new tools, testing)*
+#### [Claude Code Skills](./sop/claude-skills.md)
+What's in `.claude/skills/` (browser automation via `playwright-cli`, CSV
+`data-analysis`) and how to add a new skill.
 
 ---
 
