@@ -1,0 +1,5 @@
+prenom,nom,qualite,entreprise,siren,ville,code_naf,site_web,email_public,source
+PASCALE,CHARPY-MOORE (CHARPY),Membre du directoire,CAISSE D'EPARGNE ET DE PREVOYANCE LOIRE-CENTRE (CELC),383952470,ORLEANS,66.22Z,,,"recherche-entreprises.api.gouv.fr (RCS, donnee publique)"
+SYLVIE,LOIRE-FABRE (LOIRE-FABRE),Membre du directoire,CAISSE D'EPARGNE ET DE PREVOYANCE LOIRE-CENTRE (CELC),383952470,ORLEANS,66.22Z,,,"recherche-entreprises.api.gouv.fr (RCS, donnee publique)"
+VINCENT MARTINIEN THIERRY,MANSUY,Membre du directoire,CAISSE D'EPARGNE ET DE PREVOYANCE LOIRE-CENTRE (CELC),383952470,ORLEANS,66.22Z,,,"recherche-entreprises.api.gouv.fr (RCS, donnee publique)"
+JULIEN RENE,NEGRE,Membre du directoire,CAISSE D'EPARGNE ET DE PREVOYANCE LOIRE-CENTRE (CELC),383952470,ORLEANS,66.22Z,,,"recherche-entreprises.api.gouv.fr (RCS, donnee publique)"
