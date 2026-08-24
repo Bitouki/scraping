@@ -35,8 +35,8 @@ Complete Model Context Protocol integration documentation:
 ### SOP Documentation (`sop/`)
 
 #### [Claude Code Skills](./sop/claude-skills.md)
-What's in `.claude/skills/` (browser automation via `playwright-cli`, CSV
-`data-analysis`) and how to add a new skill.
+What's in `.claude/skills/` (CSV `data-analysis`), how to add a new skill,
+and why `playwright-cli` was tried and removed.
 
 ---
 
