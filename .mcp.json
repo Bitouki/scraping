@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "scrapegraph": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@ScrapeGraphAI/scrapegraph-mcp",
+        "--config",
+        "{\"scrapegraphApiKey\":\"${SGAI_API_KEY}\"}"
+      ],
+      "env": {}
+    }
+  }
+}

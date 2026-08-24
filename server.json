@@ -1,0 +1,43 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.ScrapeGraphAI/scrapegraph-mcp",
+  "description": "AI-powered web scraping and data extraction capabilities through ScrapeGraph API",
+  "repository": {
+    "url": "https://github.com/ScrapeGraphAI/scrapegraph-mcp",
+    "source": "github"
+  },
+  "version": "3.0.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "scrapegraph-mcp",
+      "version": "3.0.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "Your ScapeGraph API key (optional - can also be set via MCP config)",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true,
+          "name": "SGAI_API_KEY"
+        },
+        {
+          "description": "Override API base URL (default https://v2-api.scrapegraphai.com/api)",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "SGAI_API_URL"
+        },
+        {
+          "description": "Request timeout in seconds (default 120)",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "SGAI_TIMEOUT"
+        }
+      ]
+    }
+  ]
+}
