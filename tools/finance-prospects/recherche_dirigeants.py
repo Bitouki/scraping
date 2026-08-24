@@ -62,7 +62,7 @@ def fetch_companies(naf_codes: list[str], limit: int, departement: str | None) -
     with httpx.Client(timeout=20) as client:
         while len(results) < limit:
             params: dict[str, Any] = {
-                "code_naf": ",".join(naf_codes),
+                "activite_principale": ",".join(naf_codes),
                 "page": page,
                 "per_page": per_page,
                 "etat_administratif": "A",
