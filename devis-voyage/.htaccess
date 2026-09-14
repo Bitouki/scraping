@@ -1,0 +1,15 @@
+DirectoryIndex index.php
+
+# Pas de listing du contenu des dossiers.
+Options -Indexes
+
+# Le fichier des identifiants n'est pas atteignable directement.
+<Files "config.php">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</Files>

@@ -28,9 +28,11 @@ l'itinéraire pour le client.
 | Sujet | Choix | Raison |
 |---|---|---|
 | Type d'application | Web, servie sur une page | Accessible partout, rien à installer |
-| Dépendances | Aucune (Node natif) | Démarre avec `node server.js`, rien à maintenir |
-| Stockage | `data/db.json`, écriture atomique | Usage mono-poste ; sauvegarde = copier un fichier |
-| Session | Cookie HttpOnly, mémoire serveur | Un seul compte ; redémarrage = reconnexion |
+| Langage serveur | PHP sans framework | Cible o2switch (mutualisé cPanel) : on dépose le dossier et ça tourne |
+| Dépendances | Aucune | Rien à installer ni à maintenir |
+| Stockage | `data/db.json`, écriture atomique sous verrou | Pas de base à créer ; sauvegarde = télécharger un fichier |
+| Session | Session PHP native, cookie HttpOnly | Un seul compte, comportement standard de l'hébergeur |
+| Routage API | Point d'entrée unique en paramètre de requête | Marche en sous-dossier et sans `mod_rewrite` |
 | PDF | Page dédiée + impression navigateur | Pas de bibliothèque, rendu fidèle, « Enregistrer en PDF » natif |
 | Versions | Copie complète à la demande | La version envoyée reste lisible à l'identique |
 | Marge | 0 / 5 / 10 / 15 / 20 % | Les trois valeurs demandées, plus les cas limites |
@@ -66,11 +68,21 @@ pour les listes et les documents imprimés.
 
 ## Étapes réalisées
 
-1. Serveur, authentification, stockage, API REST.
+1. Serveur, authentification, stockage, API.
 2. Connexion, dossiers clients, page dossier.
 3. Les trois fenêtres de prestataires (ajout, modification avec filtres, sélection).
 4. Éditeur de devis : entête, journées, tableau des prestataires, totaux, versions.
 5. Les deux documents imprimables.
+6. Portage du serveur de Node vers PHP pour l'hébergement mutualisé o2switch — le front
+   est resté identique, seules les URL sont devenues relatives.
+
+### Pourquoi PHP plutôt que Node
+
+La première version tournait sur un serveur Node lancé à la main. Sur o2switch, Node
+suppose de passer par « Setup Node.js App » dans cPanel : déclarer le dossier, le fichier
+de démarrage, lancer le process et le surveiller. PHP y est servi nativement : déposer les
+fichiers dans `public_html` suffit, ce qui correspond à la demande — l'agence installe
+elle-même, sans intermédiaire technique.
 
 ## Vérification
 

@@ -17,7 +17,7 @@ document.title = `${kind === 'devis' ? 'Devis' : 'Itinéraire'} — ${fullName |
 function docHead() {
   return h('div', { class: 'doc-head' }, [
     h('div', {}, [
-      h('div', { class: 'agency', text: 'Graine de Voyageur' }),
+      h('div', { class: 'agency', text: window.AGENCY_NAME || 'Graine de Voyageur' }),
       h('div', { class: 'kind', text: kind === 'devis' ? `Devis interne — version ${quote.version}` : 'Votre itinéraire' }),
     ]),
     h('div', { class: 'client' }, [
@@ -116,4 +116,4 @@ sheet.replaceChildren(...(kind === 'devis' ? renderDevis() : renderItineraire())
 
 document.getElementById('print').addEventListener('click', () => window.print());
 document.getElementById('switch').textContent = kind === 'devis' ? 'Voir l’itinéraire client' : 'Voir le devis complet';
-document.getElementById('switch').href = `/print?quote=${quoteId}&doc=${kind === 'devis' ? 'itineraire' : 'devis'}`;
+document.getElementById('switch').href = `print.php?quote=${quoteId}&doc=${kind === 'devis' ? 'itineraire' : 'devis'}`;

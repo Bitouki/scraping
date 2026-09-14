@@ -186,7 +186,7 @@ async function render() {
 
 document.getElementById('logout').addEventListener('click', async () => {
   await api.logout();
-  location.replace('/');
+  location.replace('index.php');
 });
 
 window.addEventListener('hashchange', render);

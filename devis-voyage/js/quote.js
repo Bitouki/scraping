@@ -58,7 +58,7 @@ export function renderQuoteView(root, { quote, client, onReload }) {
 
   async function openPrint(kind) {
     if (state.editable && dirty && !(await save({ silent: true }))) return;
-    window.open(`/print?quote=${state.id}&doc=${kind}`, '_blank', 'noopener');
+    window.open(`print.php?quote=${state.id}&doc=${kind}`, '_blank', 'noopener');
   }
 
   async function newVersion() {
