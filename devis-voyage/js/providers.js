@@ -1,4 +1,4 @@
-import { api, usd } from './api.js';
+import { api, usd, pen } from './api.js';
 import { h, field, modal, toast, confirmDialog } from './ui.js';
 
 const SUGGESTED_TYPES = [
@@ -20,14 +20,69 @@ function datalist(id, values) {
   return h('datalist', { id }, values.map((v) => h('option', { value: v })));
 }
 
+const RATE_KEY = 'gdv_pen_rate';
+const DEFAULT_PEN_RATE = 3.75;
+
+function lastUsedRate() {
+  const stored = Number(localStorage.getItem(RATE_KEY));
+  return stored > 0 ? stored : DEFAULT_PEN_RATE;
+}
+
 function providerForm(provider, facets) {
   const types = [...new Set([...SUGGESTED_TYPES, ...facets.types])];
   const typeInput = h('input', { type: 'text', list: 'dl-types', placeholder: 'Chauffeur, Hôtel…', value: provider?.type || '' });
   const nameInput = h('input', { type: 'text', placeholder: 'Nom du prestataire', value: provider?.name || '' });
   const cityInput = h('input', { type: 'text', list: 'dl-cities', placeholder: 'Lima, Cusco…', value: provider?.city || '' });
-  const priceInput = h('input', { type: 'number', min: '0', step: '0.01', placeholder: '0.00', value: provider?.priceUsd ?? '' });
   const notesInput = h('textarea', { placeholder: 'Précisions internes (facultatif)' });
   notesInput.value = provider?.notes || '';
+
+  // openAddProvider passe toujours un objet (potentiellement {}) : se fier au champ
+  // « currency », pas à la présence de l'objet, pour que le formulaire de création
+  // s'ouvre en soles par défaut.
+  const startInPen = provider?.currency ? provider.currency === 'PEN' : true;
+  const currencySelect = h('select', {}, [
+    h('option', { value: 'PEN', text: 'Soles péruviens (PEN)', selected: startInPen }),
+    h('option', { value: 'USD', text: 'Dollars américains (USD)', selected: !startInPen }),
+  ]);
+
+  const solesInput = h('input', {
+    type: 'number', min: '0', step: '0.01', placeholder: '0.00',
+    value: provider?.currency === 'PEN' ? provider.priceSoles || '' : '',
+  });
+  const rateInput = h('input', {
+    type: 'number', min: '0', step: '0.0001',
+    value: provider?.currency === 'PEN' && provider.penRate ? provider.penRate : lastUsedRate(),
+  });
+  const usdInput = h('input', {
+    type: 'number', min: '0', step: '0.01', placeholder: '0.00',
+    value: provider?.currency === 'PEN' ? '' : provider?.priceUsd ?? '',
+  });
+  const preview = h('div', { style: 'font-size:13px;color:var(--ink-soft)' });
+
+  const penGroup = h('div', { style: 'display:grid;gap:14px' }, [
+    field('Prix en soles (PEN)', solesInput),
+    field('Taux — 1 USD = X PEN', rateInput),
+    preview,
+  ]);
+  const usdGroup = h('div', {}, [field('Prix (USD)', usdInput)]);
+
+  const syncVisibility = () => {
+    const isPen = currencySelect.value === 'PEN';
+    penGroup.hidden = !isPen;
+    usdGroup.hidden = isPen;
+  };
+
+  const updatePreview = () => {
+    const soles = Number(solesInput.value) || 0;
+    const rate = Number(rateInput.value) || 0;
+    preview.textContent = rate > 0 ? `≈ ${usd(soles / rate)}` : 'Renseignez le taux pour voir l’équivalent en dollars';
+  };
+
+  currencySelect.addEventListener('change', syncVisibility);
+  solesInput.addEventListener('input', updatePreview);
+  rateInput.addEventListener('input', updatePreview);
+  syncVisibility();
+  updatePreview();
 
   const body = [
     datalist('dl-types', types),
@@ -35,17 +90,36 @@ function providerForm(provider, facets) {
     field('Prestataire (type)', typeInput),
     field('Nom du prestataire', nameInput),
     field('Ville', cityInput),
-    field('Prix (USD)', priceInput),
+    field('Devise du prix', currencySelect),
+    penGroup,
+    usdGroup,
     field('Notes', notesInput),
   ];
 
-  const read = () => ({
-    type: typeInput.value.trim(),
-    name: nameInput.value.trim(),
-    city: cityInput.value.trim(),
-    priceUsd: Number(priceInput.value) || 0,
-    notes: notesInput.value.trim(),
-  });
+  const read = () => {
+    const currency = currencySelect.value;
+    if (currency === 'PEN') {
+      const rate = Number(rateInput.value) || 0;
+      if (rate > 0) localStorage.setItem(RATE_KEY, String(rate));
+      return {
+        type: typeInput.value.trim(),
+        name: nameInput.value.trim(),
+        city: cityInput.value.trim(),
+        currency: 'PEN',
+        priceSoles: Number(solesInput.value) || 0,
+        penRate: rate,
+        notes: notesInput.value.trim(),
+      };
+    }
+    return {
+      type: typeInput.value.trim(),
+      name: nameInput.value.trim(),
+      city: cityInput.value.trim(),
+      currency: 'USD',
+      priceUsd: Number(usdInput.value) || 0,
+      notes: notesInput.value.trim(),
+    };
+  };
 
   const validate = () => {
     const data = read();
@@ -57,6 +131,11 @@ function providerForm(provider, facets) {
     if (!data.city) {
       toast('La ville est obligatoire');
       cityInput.focus();
+      return null;
+    }
+    if (data.currency === 'PEN' && data.penRate <= 0) {
+      toast('Renseignez le taux de change pour convertir en dollars');
+      rateInput.focus();
       return null;
     }
     return data;
@@ -125,7 +204,10 @@ function searchPanel({ onPick, emptyLabel }) {
             h('div', { class: 'name', text: provider.name }),
             h('div', { class: 'sub', text: `${provider.type || 'Sans type'} · ${provider.city}` }),
           ]),
-          h('div', { class: 'price', text: usd(provider.priceUsd) }),
+          h('div', { style: 'text-align:right' }, [
+            h('div', { class: 'price', text: usd(provider.priceUsd) }),
+            provider.currency === 'PEN' ? h('div', { style: 'font-size:11px;color:var(--ink-soft)', text: pen(provider.priceSoles) }) : null,
+          ]),
         ]),
       );
     }

@@ -36,14 +36,16 @@ l'itinéraire pour le client.
 | PDF | Page dédiée + impression navigateur | Pas de bibliothèque, rendu fidèle, « Enregistrer en PDF » natif |
 | Versions | Copie complète à la demande | La version envoyée reste lisible à l'identique |
 | Marge | 0 / 5 / 10 / 15 / 20 % | Les trois valeurs demandées, plus les cas limites |
+| Devise des prestataires | Saisie au choix en soles (PEN) ou en dollars, dollar toujours stocké | Les tarifs locaux se négocient en soles ; le dollar reste la seule devise que les calculs de devis manipulent |
 
-Le taux est saisi sous la forme **1 USD = X EUR** pour lever toute ambiguïté de sens.
+Le taux est saisi sous la forme **1 USD = X EUR** pour lever toute ambiguïté de sens. De la
+même façon, le taux d'un prestataire se saisit **1 USD = X PEN**.
 
 ## Modèle de données
 
 ```
 clients   : id, firstName, lastName, email, phone, notes
-providers : id, type, name, city, priceUsd, notes
+providers : id, type, name, city, currency, priceSoles, penRate, priceUsd, notes
 quotes    : id, clientId, groupId, version, createdAt,
             header { firstName, lastName, startDate, endDate, exchangeRate, marginPct, travelers, title },
             days [ { id, dayNumber, date, city, title, description, hotel,

@@ -212,18 +212,45 @@ function provider_facets(): array
     return ['types' => $uniq('type'), 'cities' => $uniq('city')];
 }
 
+/**
+ * Calcule le prix canonique en dollars à partir de la saisie. En soles, le
+ * dollar reste la référence pour tous les calculs de devis : la conversion
+ * se fait une fois pour toutes à l'enregistrement, mais le montant en soles
+ * et le taux utilisé sont conservés pour qu'on les retrouve à la modification.
+ */
+function resolve_provider_price(array $input, array $fallback = []): array
+{
+    $currency = ($input['currency'] ?? $fallback['currency'] ?? 'USD') === 'PEN' ? 'PEN' : 'USD';
+
+    if ($currency === 'PEN') {
+        $priceSoles = (float) ($input['priceSoles'] ?? $fallback['priceSoles'] ?? 0);
+        $penRate    = (float) ($input['penRate'] ?? $fallback['penRate'] ?? 0);
+        $priceUsd   = $penRate > 0 ? $priceSoles / $penRate : 0.0;
+        return compact('currency', 'priceSoles', 'penRate', 'priceUsd');
+    }
+
+    return [
+        'currency'   => 'USD',
+        'priceSoles' => 0.0,
+        'penRate'    => 0.0,
+        'priceUsd'   => (float) ($input['priceUsd'] ?? $fallback['priceUsd'] ?? 0),
+    ];
+}
+
 function create_provider(array $input): array
 {
     return store_mutate(function (array &$db) use ($input) {
-        $provider = [
-            'id'        => new_id(),
-            'type'      => str_field($input['type'] ?? ''),
-            'name'      => str_field($input['name'] ?? ''),
-            'city'      => str_field($input['city'] ?? ''),
-            'priceUsd'  => (float) ($input['priceUsd'] ?? 0),
-            'notes'     => str_field($input['notes'] ?? ''),
-            'createdAt' => now_iso(),
-        ];
+        $provider = array_merge(
+            [
+                'id'        => new_id(),
+                'type'      => str_field($input['type'] ?? ''),
+                'name'      => str_field($input['name'] ?? ''),
+                'city'      => str_field($input['city'] ?? ''),
+                'notes'     => str_field($input['notes'] ?? ''),
+                'createdAt' => now_iso(),
+            ],
+            resolve_provider_price($input)
+        );
         $db['providers'][] = $provider;
         return $provider;
     });
@@ -241,8 +268,8 @@ function update_provider(string $id, array $input): ?array
                     $provider[$key] = str_field($input[$key]);
                 }
             }
-            if (array_key_exists('priceUsd', $input)) {
-                $provider['priceUsd'] = (float) $input['priceUsd'];
+            if (array_key_exists('currency', $input) || array_key_exists('priceUsd', $input) || array_key_exists('priceSoles', $input)) {
+                $provider = array_merge($provider, resolve_provider_price($input, $provider));
             }
             return $provider;
         }

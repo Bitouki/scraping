@@ -58,6 +58,9 @@ export const usd = (value) =>
 export const eur = (value) =>
   new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(Number(value) || 0);
 
+export const pen = (value) =>
+  new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'PEN' }).format(Number(value) || 0);
+
 export const frDate = (iso) => {
   if (!iso) return '';
   const [y, m, d] = iso.split('-');

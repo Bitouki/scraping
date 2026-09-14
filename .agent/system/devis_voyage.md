@@ -86,6 +86,16 @@ onglets ouverts ne peuvent pas s'écraser.
 **Recherche.** `fr_key()` neutralise casse et accents des deux côtés de la comparaison, pour
 le filtrage comme pour les tris : « hotel » trouve « Hôtel ».
 
+**Devise des prestataires.** Un prestataire porte `currency` (`PEN` ou `USD`), et selon le
+cas `priceSoles` + `penRate`, ou directement `priceUsd`. Dans tous les cas, `priceUsd` est
+recalculé et stocké côté serveur (`resolve_provider_price()`) — jamais fait confiance à une
+valeur envoyée par le client — et reste le seul champ que lisent les devis, la recherche et
+les documents : rien en aval du catalogue ne connaît le sol péruvien. Le taux se lit comme
+celui d'un devis, « 1 USD = X PEN » ; un taux à zéro ou absent donne un prix en dollars à
+zéro plutôt qu'une division par zéro. Le formulaire d'ajout s'ouvre en soles par défaut (le
+taux du dernier prestataire saisi est repris via `localStorage`) et retombe sur le mode
+dollars uniquement pour modifier un prestataire déjà enregistré en dollars.
+
 ## Sécurité
 
 - Mot de passe comparé avec `hash_equals` ; identifiants isolés dans `config.php`, lui-même

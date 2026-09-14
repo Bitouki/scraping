@@ -44,8 +44,11 @@ La page d'accueil liste les dossiers. Un dossier = un client. On y entre en cliq
 
 Deux boutons, disponibles depuis l'accueil et depuis chaque dossier :
 
-- **Ajouter un prestataire** — ouvre une fenêtre avec quatre champs : le type de prestation
-  (Chauffeur, Hôtel, Guide…), le nom du prestataire, la ville et le prix en dollars.
+- **Ajouter un prestataire** — ouvre une fenêtre avec le type de prestation (Chauffeur,
+  Hôtel, Guide…), le nom, la ville, et le prix. Le prix se saisit **en soles péruviens**
+  par défaut (le taux de change est mémorisé d'une fiche à l'autre) et se convertit
+  automatiquement en dollars, qui restent la devise de référence pour tous les calculs de
+  devis ; la devise se change en un clic si un prestataire facture directement en dollars.
   Une fois enregistré, le prestataire est réutilisable sur tous les devis.
 - **Modifier un prestataire** — ouvre une fenêtre de recherche avec filtres (texte, type,
   ville). On clique sur un prestataire pour corriger son prix ou ses informations, ou pour
