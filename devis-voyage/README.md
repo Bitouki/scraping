@@ -6,12 +6,25 @@ de vente final en euros, marge comprise.
 
 ## Démarrer
 
+Une seule chose à installer au préalable : **Node.js**, à prendre sur <https://nodejs.org>
+(version LTS, bouton de gauche). C'est gratuit et ça ne s'installe qu'une fois.
+
+Ensuite, double-cliquer sur le lanceur correspondant à l'ordinateur :
+
+- **Windows** : `DEMARRER-Windows.bat`
+- **Mac** : `DEMARRER-Mac.command` — au tout premier lancement, faire un clic droit puis
+  « Ouvrir », et confirmer : macOS demande cette autorisation une fois pour les fichiers
+  téléchargés.
+
+Le navigateur s'ouvre seul sur le logiciel. La fenêtre noire qui apparaît est le moteur :
+la laisser ouverte pendant le travail, la fermer arrête le logiciel.
+
+En ligne de commande, l'équivalent est :
+
 ```bash
 cd devis-voyage
-npm start          # ou: node server.js
+node server.js     # puis ouvrir http://localhost:3000
 ```
-
-Puis ouvrir <http://localhost:3000>.
 
 Aucune dépendance à installer : le serveur n'utilise que Node (18 ou plus récent) et les
 données sont stockées dans `data/db.json`.
