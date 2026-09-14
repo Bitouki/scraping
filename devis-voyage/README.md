@@ -61,9 +61,9 @@ partout.
 **Créer un nouveau devis** ouvre l'éditeur.
 
 *L'entête* contient le prénom et le nom du client, les dates du voyage, le **taux de change**
-(1 USD = combien d'euros) et la **marge** à appliquer (sans marge, 5, 10, 15 ou 20 %).
-Taux et marge sont propres à chaque devis : un ancien devis garde le taux du jour où il a
-été fait.
+(1 USD = combien d'euros), la **marge** à appliquer (sans marge, 5, 10, 15 ou 20 %) et le
+**nombre de participants**. Taux, marge et nombre de participants sont propres à chaque
+devis : un ancien devis garde le taux du jour où il a été fait.
 
 *Le corps* se remplit jour par jour. Chaque journée contient :
 
@@ -82,8 +82,11 @@ reste modifiable ligne par ligne (le tarif du catalogue, lui, n'est pas touché)
 *Les totaux* s'affichent en permanence en bas de l'écran :
 
 ```
-Total USD  →  Total EUR brut (au taux)  →  Marge  →  Prix de vente EUR
+Total USD  →  Total EUR brut (au taux)  →  Marge  →  Prix de vente EUR  →  Prix par personne
 ```
+
+Le prix par personne divise le prix de vente (marge comprise) par le nombre de participants
+renseigné dans l'entête.
 
 ### 4. Les deux documents
 

@@ -14,11 +14,14 @@ export function computeTotals(quote) {
   );
   const grossEur = totalUsd * rate;
   const marginEur = grossEur * (margin / 100);
-  return { totalUsd, grossEur, marginEur, finalEur: grossEur + marginEur, marginPct: margin };
+  const finalEur = grossEur + marginEur;
+  const travelers = Math.max(1, Number(quote.header.travelers) || 1);
+  return { totalUsd, grossEur, marginEur, finalEur, marginPct: margin, travelers, finalPerPerson: finalEur / travelers };
 }
 
 export function renderQuoteView(root, { quote, client, onReload }) {
   const state = structuredClone(quote);
+  state.header.travelers = Math.max(1, Number(state.header.travelers) || 1);
   let dirty = false;
 
   const markDirty = () => {
@@ -81,6 +84,14 @@ export function renderQuoteView(root, { quote, client, onReload }) {
     return input;
   };
 
+  const travelersInput = headerInput('travelers', { type: 'number', min: '1', step: '1' });
+  travelersInput.addEventListener('change', () => {
+    const value = Math.max(1, Math.round(Number(travelersInput.value) || 1));
+    travelersInput.value = value;
+    state.header.travelers = value;
+    renderTotals();
+  });
+
   const marginSelect = h(
     'select',
     { disabled: !state.editable },
@@ -103,6 +114,7 @@ export function renderQuoteView(root, { quote, client, onReload }) {
       field('Retour', headerInput('endDate', { type: 'date' })),
       field('Taux — 1 USD = ? EUR', headerInput('exchangeRate', { type: 'number', min: '0', step: '0.0001' })),
       field('Marge appliquée', marginSelect),
+      field('Nombre de participants', travelersInput),
     ]),
     h('div', { style: 'margin-top:14px' }, [field('Intitulé du voyage', headerInput('title', { type: 'text', placeholder: 'Pérou — 10 jours' }))]),
   ]);
@@ -358,6 +370,10 @@ export function renderQuoteView(root, { quote, client, onReload }) {
         h('div', { class: 'total-item' }, [h('small', { text: 'Total EUR brut' }), h('strong', { text: eur(t.grossEur) })]),
         h('div', { class: 'total-item' }, [h('small', { text: `Marge ${t.marginPct} %` }), h('strong', { text: eur(t.marginEur) })]),
         h('div', { class: 'total-item final' }, [h('small', { text: 'Prix de vente EUR' }), h('strong', { text: eur(t.finalEur) })]),
+        h('div', { class: 'total-item' }, [
+          h('small', { text: `Par personne (× ${t.travelers})` }),
+          h('strong', { text: eur(t.finalPerPerson) }),
+        ]),
       ]),
       h('div', { style: 'display:flex;gap:10px;flex-wrap:wrap' }, [
         h('button', { class: 'btn', type: 'button', text: 'PDF Itinéraire', onClick: () => openPrint('itineraire') }),

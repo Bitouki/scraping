@@ -45,7 +45,7 @@ Le taux est saisi sous la forme **1 USD = X EUR** pour lever toute ambiguïté d
 clients   : id, firstName, lastName, email, phone, notes
 providers : id, type, name, city, priceUsd, notes
 quotes    : id, clientId, groupId, version, createdAt,
-            header { firstName, lastName, startDate, endDate, exchangeRate, marginPct, title },
+            header { firstName, lastName, startDate, endDate, exchangeRate, marginPct, travelers, title },
             days [ { id, dayNumber, date, city, title, description, hotel,
                      activities[], items[ { id, providerId, type, name, city, priceUsd, quantity } ] } ]
 ```
@@ -57,11 +57,15 @@ référencer seulement : une hausse de tarif au catalogue ne réécrit pas un de
 ## Calcul
 
 ```
-total USD   = Σ (prix ligne × quantité)
-EUR brut    = total USD × taux
-marge       = EUR brut × marge%
-prix vente  = EUR brut + marge
+total USD    = Σ (prix ligne × quantité)
+EUR brut     = total USD × taux
+marge        = EUR brut × marge%
+prix vente   = EUR brut + marge
+prix/personne = prix vente ÷ nombre de participants
 ```
+
+Le nombre de participants (`travelers`) est un champ de l'entête, minimum 1, propre à
+chaque devis comme le taux et la marge.
 
 Calculé côté client pour l'affichage direct, recalculé côté serveur (`store.computeTotals`)
 pour les listes et les documents imprimés.

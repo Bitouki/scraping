@@ -86,6 +86,7 @@ function renderDevis() {
       h('div', { class: 'row' }, [h('span', { text: 'Total EUR brut' }), h('span', { text: eur(totals.grossEur) })]),
       h('div', { class: 'row muted' }, [h('span', { text: `Marge ${totals.marginPct} %` }), h('span', { text: eur(totals.marginEur) })]),
       h('div', { class: 'row final' }, [h('span', { text: 'Prix de vente EUR' }), h('span', { text: eur(totals.finalEur) })]),
+      h('div', { class: 'row per-person' }, [h('span', { text: `Prix par personne (× ${totals.travelers})` }), h('span', { text: eur(totals.finalPerPerson) })]),
     ]),
     h('div', { class: 'foot-note', text: `Document interne — version ${quote.version} éditée le ${new Date().toLocaleDateString('fr-FR')}. Ne pas transmettre au client.` }),
   ];

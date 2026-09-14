@@ -18,6 +18,7 @@ const DEFAULT_HEADER = [
     'exchangeRate' => 0.92,
     'marginPct'    => 10,
     'title'        => '',
+    'travelers'    => 1,
 ];
 
 function store_dir(): void
@@ -301,6 +302,7 @@ function normalize_header(array $header): array
     $merged = array_merge(DEFAULT_HEADER, $header);
     $merged['exchangeRate'] = (float) $merged['exchangeRate'];
     $merged['marginPct']    = (float) $merged['marginPct'];
+    $merged['travelers']    = max(1, (int) $merged['travelers']);
     foreach (['firstName', 'lastName', 'startDate', 'endDate', 'title'] as $key) {
         $merged[$key] = (string) $merged[$key];
     }
@@ -322,13 +324,17 @@ function compute_totals(array $quote): array
 
     $grossEur  = $totalUsd * $rate;
     $marginEur = $grossEur * ($margin / 100);
+    $finalEur  = $grossEur + $marginEur;
+    $travelers = max(1, (int) ($quote['header']['travelers'] ?? 1));
 
     return [
-        'totalUsd'  => $totalUsd,
-        'grossEur'  => $grossEur,
-        'marginPct' => $margin,
-        'marginEur' => $marginEur,
-        'finalEur'  => $grossEur + $marginEur,
+        'totalUsd'       => $totalUsd,
+        'grossEur'       => $grossEur,
+        'marginPct'      => $margin,
+        'marginEur'      => $marginEur,
+        'finalEur'       => $finalEur,
+        'travelers'      => $travelers,
+        'finalPerPerson' => $finalEur / $travelers,
     ];
 }
 

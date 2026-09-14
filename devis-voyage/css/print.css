@@ -230,6 +230,17 @@ tr.subtotal td {
   font-weight: 700;
 }
 
+.totals-box .row.per-person {
+  background: #eef5f0;
+  border-bottom: none;
+  font-size: 13px;
+}
+
+.totals-box .row.per-person span:last-child {
+  color: var(--brand);
+  font-weight: 700;
+}
+
 .foot-note {
   margin-top: 26px;
   padding-top: 10px;

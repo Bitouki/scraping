@@ -72,7 +72,9 @@ le rendu selon `?doc=devis|itineraire`.
 
 **Totaux calculés deux fois.** Côté client pour l'affichage immédiat (`quote.js`), côté
 serveur pour les listes et les documents (`compute_totals`). Les deux formules doivent rester
-alignées.
+alignées. Le prix par personne (`finalPerPerson`) divise le prix de vente par
+`header.travelers`, toujours ramené à un minimum de 1 côté serveur (`normalize_header`) pour
+qu'une valeur absente ou nulle ne produise jamais une division par zéro.
 
 **Rendu du DOM.** `ui.js/h()` ignore les enfants nuls, mais `replaceChildren()` afficherait
 le texte « null » : passer par `ui.js/mount()` pour tout rendu de page.
