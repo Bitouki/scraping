@@ -1,10 +1,22 @@
-# ScrapeGraph MCP Server Documentation
+# Documentation Hub
 
-Welcome to the ScrapeGraph MCP Server documentation hub. This directory contains comprehensive documentation for understanding, developing, and maintaining the ScrapeGraph MCP Server.
+This repository hosts two independent projects:
+
+| Projet | Dossier | Documentation |
+|---|---|---|
+| **ScrapeGraph MCP Server** — serveur MCP pour l'API ScrapeGraphAI | `src/scrapegraph_mcp/` | [Architecture](./system/project_architecture.md) · [Protocole MCP](./system/mcp_protocol.md) |
+| **Devis Voyage** — logiciel interne de cotisation de voyages (Graine de Voyageur) | `devis-voyage/` | [État du système](./system/devis_voyage.md) · [PRD et plan](./tasks/devis_voyage.md) · [Manuel](../devis-voyage/README.md) |
+
+Les deux projets ne partagent ni code ni dépendances. La suite de ce document concerne le
+serveur MCP ; pour le logiciel de devis, suivre les liens ci-dessus.
 
 ## 📚 Available Documentation
 
 ### System Documentation (`system/`)
+
+#### [Devis Voyage — état du système](./system/devis_voyage.md)
+Logiciel de cotisation des voyages : pile technique sans dépendance, structure des fichiers,
+routes de l'API, modèle de versions des devis, séparation devis / itinéraire, sécurité.
 
 #### [Project Architecture](./system/project_architecture.md)
 Complete system architecture documentation including:
@@ -30,7 +42,9 @@ Complete Model Context Protocol integration documentation:
 
 ### Task Documentation (`tasks/`)
 
-*Future: PRD and implementation plans for specific features*
+#### [Devis Voyage — PRD et plan](./tasks/devis_voyage.md)
+Besoin exprimé, décisions d'architecture, modèle de données, formule de calcul du prix de
+vente, étapes réalisées et vérification de bout en bout.
 
 ### SOP Documentation (`sop/`)
 

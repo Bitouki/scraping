@@ -1,0 +1,13 @@
+{
+  "name": "devis-voyage",
+  "version": "1.0.0",
+  "description": "Logiciel de cotisation de voyages sur mesure",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}
